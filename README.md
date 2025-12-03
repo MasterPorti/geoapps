@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GeoApps 🌍
 
-## Getting Started
+> Plataforma de análisis satelital impulsada por Inteligencia Artificial y Visión por Computadora.
 
-First, run the development server:
+![Status](https://img.shields.io/badge/Status-Stable-green)
+![Security](https://img.shields.io/badge/Security-Patched-blue)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 📖 Descripción
+GeoApps permite a investigadores y entusiastas analizar imágenes satelitales utilizando algoritmos de clustering (K-Means) para segmentar y clasificar tipos de terreno de manera automática.
+
+## 🚀 Características
+-   **Análisis Visual:** Segmentación de imágenes en tiempo real.
+-   **Dashboard Interactivo:** Visualización de estadísticas de cobertura.
+-   **Stack Moderno:** Construido con Next.js 16 y Python.
+
+## 🛠️ Instalación y Configuración
+
+### Prerrequisitos
+-   Node.js 18+
+-   Python 3.9+
+-   Pip
+
+### Pasos
+1.  **Clonar el repositorio:**
+    ```bash
+    git clone https://github.com/josprox/geoapps.git
+    cd geoapps
+    ```
+
+2.  **Instalar dependencias de Frontend:**
+    ```bash
+    npm install
+    ```
+
+3.  **Instalar dependencias de Python:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4.  **Iniciar el servidor de desarrollo:**
+    ```bash
+    npm run dev
+    ```
+
+5.  **Acceder:**
+    Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
+
+## 📂 Estructura del Proyecto
+```
+geoapps/
+├── app/                # Código fuente Next.js (App Router)
+│   ├── api/            # API Routes (Backend Node.js)
+│   └── satellite/      # Página principal de la herramienta
+├── docs/               # Documentación técnica detallada
+├── process_satellite.py # Script Core de procesamiento (Python)
+└── public/             # Assets estáticos
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📚 Documentación
+Para detalles técnicos profundos, consulta la carpeta `/docs`:
+-   [Visión General](docs/overview.md)
+-   [Arquitectura](docs/architecture.md)
+-   [Seguridad](docs/security.md)
+-   [Testing](docs/testing.md)
+-   [Guía de Despliegue (VPS/HestiaCP)](docs/deployment.md) 🚀
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🤝 Contribuir
+Este proyecto es de código abierto. Por favor, lee `docs/roadmap.md` antes de contribuir.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+Desarrollado con ❤️ por JosProx
