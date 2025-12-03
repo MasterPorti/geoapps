@@ -23,7 +23,7 @@ GeoApps permite a investigadores y entusiastas analizar imágenes satelitales ut
 ### Pasos
 1.  **Clonar el repositorio:**
     ```bash
-    git clone https://github.com/josprox/geoapps.git
+    git clone https://github.com/MasterPorti/geoapps
     cd geoapps
     ```
 
@@ -68,4 +68,15 @@ Para detalles técnicos profundos, consulta la carpeta `/docs`:
 Este proyecto es de código abierto. Por favor, lee `docs/roadmap.md` antes de contribuir.
 
 ---
-Desarrollado con ❤️ por JosProx
+## 🛡️ Auditoría y Mantenimiento
+
+Este proyecto ha sido sometido a una auditoría técnica exhaustiva y refactorización por **JOSPROX - Joss Estrada**.
+
+**Mejoras implementadas:**
+-   ✅ **Seguridad:** Parcheo de vulnerabilidades críticas (RCE) y sanitización de inputs.
+-   ✅ **Arquitectura:** Optimización del flujo de datos entre Next.js y Python.
+-   ✅ **Documentación:** Creación de guías de arquitectura, seguridad y despliegue.
+-   ✅ **DevOps:** Configuración lista para producción con PM2 y HestiaCP.
+
+---
+Desarrollado con ❤️
