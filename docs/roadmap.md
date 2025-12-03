@@ -1,9 +1,9 @@
 # Roadmap del Proyecto
 
-## Corto Plazo (Inmediato)
--   [ ] **Seguridad:** Corregir la vulnerabilidad de inyección de comandos en `route.ts`.
--   [ ] **Limpieza:** Implementar borrado automático de archivos en `temp/`.
--   [ ] **Validación:** Añadir validación estricta de tipos de archivo (solo imágenes).
+## Corto Plazo (Completado)
+-   [x] **Seguridad:** Corregir la vulnerabilidad de inyección de comandos en `route.ts`.
+-   [x] **Limpieza:** Implementar borrado automático de archivos en `temp/`.
+-   [x] **Validación:** Añadir validación estricta de tipos de archivo (solo imágenes).
 
 ## Mediano Plazo (Mejoras de Arquitectura)
 -   [ ] **Dockerización:** Crear `Dockerfile` para asegurar que las dependencias de Python y Node.js sean consistentes en cualquier entorno.
