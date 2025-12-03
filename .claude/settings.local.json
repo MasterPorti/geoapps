@@ -3,7 +3,13 @@
     "allow": [
       "Bash(find:*)",
       "Bash(npm install:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(python -m pip install:*)",
+      "Bash(npm run dev:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill /F /PID 6732)",
+      "Bash(taskkill //F //PID 6732)"
     ],
     "deny": [],
     "ask": []

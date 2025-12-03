@@ -31,6 +31,9 @@ export default function SatelliteMap({
   const mapRef = useRef<L.Map | null>(null);
   const markerRef = useRef<L.Marker | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [analysisImage, setAnalysisImage] = useState<string | null>(null);
+  const [analysisResults, setAnalysisResults] = useState<any>(null);
 
   // Update map center when coordinates change
   useEffect(() => {
@@ -90,6 +93,79 @@ export default function SatelliteMap({
     }, 100);
   };
 
+  const handleProcessImage = async () => {
+    if (!mapRef.current) return;
+
+    setIsProcessing(true);
+    setAnalysisImage(null);
+    setAnalysisResults(null);
+
+    // Hide marker before capturing
+    if (markerRef.current) {
+      markerRef.current.remove();
+    }
+
+    // Wait for marker removal
+    setTimeout(() => {
+      if (!mapRef.current) return;
+
+      leafletImage(mapRef.current, async (err: Error | null, canvas: HTMLCanvasElement) => {
+        // Show marker again after capturing
+        if (markerRef.current && mapRef.current) {
+          markerRef.current.addTo(mapRef.current);
+        }
+
+        if (err) {
+          console.error("Error al capturar el mapa:", err);
+          alert("Error al capturar la imagen. Por favor intenta nuevamente.");
+          setIsProcessing(false);
+          return;
+        }
+
+        // Convert canvas to blob
+        canvas.toBlob(async (blob) => {
+          if (!blob) {
+            alert("Error al crear la imagen.");
+            setIsProcessing(false);
+            return;
+          }
+
+          try {
+            // Preparar FormData para enviar al API
+            const formData = new FormData();
+            const file = new File([blob], `satellite-${latitude.toFixed(4)}-${longitude.toFixed(4)}.png`, {
+              type: 'image/png'
+            });
+            formData.append('image', file);
+            formData.append('numClusters', '4');
+
+            // Enviar al API
+            const response = await fetch('/api/process-image', {
+              method: 'POST',
+              body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.success && data.analysisImage) {
+              setAnalysisImage(data.analysisImage);
+              setAnalysisResults(data.results);
+              console.log('Resultados del análisis:', data.results);
+            } else {
+              alert('Error al procesar la imagen: ' + (data.error || 'Error desconocido'));
+              console.error('Error del servidor:', data);
+            }
+          } catch (error) {
+            console.error('Error enviando imagen:', error);
+            alert('Error al procesar la imagen. Asegúrate de que Python y las dependencias estén instaladas.');
+          } finally {
+            setIsProcessing(false);
+          }
+        });
+      });
+    }, 100);
+  };
+
   const position: [number, number] = [latitude, longitude];
 
   return (
@@ -117,7 +193,7 @@ export default function SatelliteMap({
         </MapContainer>
       </div>
 
-      <div className="mt-4 flex justify-center">
+      <div className="mt-4 flex justify-center gap-4">
         <button
           onClick={handleDownloadImage}
           disabled={isDownloading}
@@ -140,7 +216,80 @@ export default function SatelliteMap({
             </>
           )}
         </button>
+
+        <button
+          onClick={handleProcessImage}
+          disabled={isProcessing}
+          className="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center gap-2"
+        >
+          {isProcessing ? (
+            <>
+              <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Procesando con K-Means...
+            </>
+          ) : (
+            <>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+              Analizar con Python
+            </>
+          )}
+        </button>
       </div>
+
+      {/* Resultados del análisis */}
+      {analysisImage && (
+        <div className="mt-8">
+          <h3 className="text-xl font-semibold mb-4 text-center">Análisis K-Means</h3>
+          <div className="rounded-lg overflow-hidden shadow-lg border border-zinc-200 dark:border-zinc-800">
+            <img src={analysisImage} alt="Análisis K-Means" className="w-full h-auto" />
+          </div>
+
+          {/* Tabla de resultados */}
+          {analysisResults && analysisResults.clusters && (
+            <div className="mt-6 bg-white dark:bg-zinc-900 rounded-lg p-6 shadow-lg border border-zinc-200 dark:border-zinc-800">
+              <h4 className="text-lg font-semibold mb-4">Distribución de Cobertura</h4>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b dark:border-zinc-700">
+                      <th className="text-left py-2 px-4">Cluster</th>
+                      <th className="text-left py-2 px-4">Color RGB</th>
+                      <th className="text-left py-2 px-4">Porcentaje</th>
+                      <th className="text-left py-2 px-4">Muestra</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {analysisResults.clusters.map((cluster: any, index: number) => (
+                      <tr key={index} className="border-b dark:border-zinc-700">
+                        <td className="py-2 px-4">Cluster {cluster.cluster_id}</td>
+                        <td className="py-2 px-4 font-mono text-sm">
+                          rgb({cluster.color_rgb.join(', ')})
+                        </td>
+                        <td className="py-2 px-4 font-semibold">
+                          {cluster.percentage.toFixed(2)}%
+                        </td>
+                        <td className="py-2 px-4">
+                          <div
+                            className="w-12 h-6 rounded border border-zinc-300 dark:border-zinc-600"
+                            style={{
+                              backgroundColor: `rgb(${cluster.color_rgb.join(',')})`
+                            }}
+                          ></div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
