@@ -42,3 +42,4 @@ next-env.d.ts
 
 # temporary image processing
 /temp
+.claude/*
